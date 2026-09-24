@@ -88,7 +88,7 @@ def get_annotated_list(depth=None, parent=None):
         if max_depth is not None:
             max_depth += parent.get_depth()
     else:
-        categories = Category.get_tree()
+        categories = Category.objects.get_tree()
 
     if max_depth is not None:
         categories = categories.filter(depth__lte=max_depth)

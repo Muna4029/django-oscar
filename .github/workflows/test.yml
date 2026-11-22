@@ -18,14 +18,20 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12', '3.13']
-        django-version: ['4.2', '5.2']
+        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
+        django-version: ['4.2', '5.2', '6.0']
         exclude:
-          # Django 5.2(LTS) supports python 3.10 and up.
+          # Django 4.2 does not support Python 3.14.
+          - django-version: '4.2'
+            python-version: '3.14'
+          # Django 5.2 does not support Python 3.14.
           - django-version: '5.2'
-            python-version: '3.8'
-          - django-version: '5.2'
-            python-version: '3.9'
+            python-version: '3.14'
+          # Django 6.0 supports Python 3.12 and up.
+          - django-version: '6.0'
+            python-version: '3.10'
+          - django-version: '6.0'
+            python-version: '3.11'
     services:
       postgres:
         image: postgres:14
@@ -37,9 +43,9 @@ jobs:
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: postgres
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
@@ -57,15 +63,15 @@ jobs:
       run: |
         coverage run --parallel --omit='*migrations*' -m pytest -x
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v5.4.3
+      uses: codecov/codecov-action@v5.5.2
       with:
         fail_ci_if_error: false
   lint_python:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: '3.12'
     - name: Install dependencies
@@ -77,9 +83,9 @@ jobs:
   lint_js:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Set up NodeJS
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
       with:
         node-version: '20'
     - name: Install dependencies
@@ -91,9 +97,9 @@ jobs:
   sandbox:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: '3.12'
     - name: Build sandbox
@@ -103,9 +109,9 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: '3.12'
     - name: Build docs
